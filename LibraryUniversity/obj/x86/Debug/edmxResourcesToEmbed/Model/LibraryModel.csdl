@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DBUniversityModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="DBUniversityEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Books" EntityType="DBUniversityModel.Books" />
+    <EntitySet Name="EBook" EntityType="DBUniversityModel.EBook" />
+    <EntitySet Name="Employee" EntityType="DBUniversityModel.Employee" />
+    <EntitySet Name="Faculty" EntityType="DBUniversityModel.Faculty" />
+    <EntitySet Name="Giving" EntityType="DBUniversityModel.Giving" />
+    <EntitySet Name="Group" EntityType="DBUniversityModel.Group" />
+    <EntitySet Name="Publication" EntityType="DBUniversityModel.Publication" />
+    <EntitySet Name="Readers" EntityType="DBUniversityModel.Readers" />
+    <EntitySet Name="Return" EntityType="DBUniversityModel.Return" />
+    <EntitySet Name="Shelving" EntityType="DBUniversityModel.Shelving" />
+    <EntitySet Name="Student" EntityType="DBUniversityModel.Student" />
+    <EntitySet Name="sysdiagrams" EntityType="DBUniversityModel.sysdiagrams" />
+    <EntitySet Name="Teachers" EntityType="DBUniversityModel.Teachers" />
+    <EntitySet Name="Writer" EntityType="DBUniversityModel.Writer" />
+    <AssociationSet Name="FK_Books_EBook" Association="DBUniversityModel.FK_Books_EBook">
+      <End Role="EBook" EntitySet="EBook" />
+      <End Role="Books" EntitySet="Books" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Books_Publication" Association="DBUniversityModel.FK_Books_Publication">
+      <End Role="Publication" EntitySet="Publication" />
+      <End Role="Books" EntitySet="Books" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Books_Writer" Association="DBUniversityModel.FK_Books_Writer">
+      <End Role="Writer" EntitySet="Writer" />
+      <End Role="Books" EntitySet="Books" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Giving_Books" Association="DBUniversityModel.FK_Giving_Books">
+      <End Role="Books" EntitySet="Books" />
+      <End Role="Giving" EntitySet="Giving" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Return_Books" Association="DBUniversityModel.FK_Return_Books">
+      <End Role="Books" EntitySet="Books" />
+      <End Role="Return" EntitySet="Return" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Giving_Employee" Association="DBUniversityModel.FK_Giving_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Giving" EntitySet="Giving" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Return_Employee" Association="DBUniversityModel.FK_Return_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="Return" EntitySet="Return" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Student_Faculty" Association="DBUniversityModel.FK_Student_Faculty">
+      <End Role="Faculty" EntitySet="Faculty" />
+      <End Role="Student" EntitySet="Student" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Teachers_Faculty" Association="DBUniversityModel.FK_Teachers_Faculty">
+      <End Role="Faculty" EntitySet="Faculty" />
+      <End Role="Teachers" EntitySet="Teachers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Giving_Readers" Association="DBUniversityModel.FK_Giving_Readers">
+      <End Role="Readers" EntitySet="Readers" />
+      <End Role="Giving" EntitySet="Giving" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Student_Group" Association="DBUniversityModel.FK_Student_Group">
+      <End Role="Group" EntitySet="Group" />
+      <End Role="Student" EntitySet="Student" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Readers_Student" Association="DBUniversityModel.FK_Readers_Student">
+      <End Role="Student" EntitySet="Student" />
+      <End Role="Readers" EntitySet="Readers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Readers_Teachers" Association="DBUniversityModel.FK_Readers_Teachers">
+      <End Role="Teachers" EntitySet="Teachers" />
+      <End Role="Readers" EntitySet="Readers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Return_Readers" Association="DBUniversityModel.FK_Return_Readers">
+      <End Role="Readers" EntitySet="Readers" />
+      <End Role="Return" EntitySet="Return" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Group_Faculty" Association="DBUniversityModel.FK_Group_Faculty">
+      <End Role="Faculty" EntitySet="Faculty" />
+      <End Role="Group" EntitySet="Group" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Books_Shelving1" Association="DBUniversityModel.FK_Books_Shelving1">
+      <End Role="Shelving" EntitySet="Shelving" />
+      <End Role="Books" EntitySet="Books" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Books">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="year" Type="DateTime" />
+    <Property Name="ISBN" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="pages" Type="Int32" />
+    <Property Name="id_ebook" Type="Int32" />
+    <Property Name="id_writer" Type="Int32" />
+    <Property Name="id_publication" Type="Int32" />
+    <NavigationProperty Name="EBook" Relationship="DBUniversityModel.FK_Books_EBook" FromRole="Books" ToRole="EBook" />
+    <NavigationProperty Name="Publication" Relationship="DBUniversityModel.FK_Books_Publication" FromRole="Books" ToRole="Publication" />
+    <NavigationProperty Name="Writer" Relationship="DBUniversityModel.FK_Books_Writer" FromRole="Books" ToRole="Writer" />
+    <NavigationProperty Name="Giving" Relationship="DBUniversityModel.FK_Giving_Books" FromRole="Books" ToRole="Giving" />
+    <NavigationProperty Name="Return" Relationship="DBUniversityModel.FK_Return_Books" FromRole="Books" ToRole="Return" />
+    <Property Type="Int32" Name="count" />
+    <Property Type="Int32" Name="id_shelving" />
+    <NavigationProperty Name="Shelving_1" Relationship="DBUniversityModel.FK_Books_Shelving1" FromRole="Books" ToRole="Shelving" />
+  </EntityType>
+  <EntityType Name="EBook">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="size" Type="Int64" />
+    <Property Name="type" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="adress" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Books" Relationship="DBUniversityModel.FK_Books_EBook" FromRole="EBook" ToRole="Books" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="surname" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="patronymic" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="password" Type="String" Nullable="true" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="permission" Type="String" Nullable="true" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Giving" Relationship="DBUniversityModel.FK_Giving_Employee" FromRole="Employee" ToRole="Giving" />
+    <NavigationProperty Name="Return" Relationship="DBUniversityModel.FK_Return_Employee" FromRole="Employee" ToRole="Return" />
+  </EntityType>
+  <EntityType Name="Faculty">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Student" Relationship="DBUniversityModel.FK_Student_Faculty" FromRole="Faculty" ToRole="Student" />
+    <NavigationProperty Name="Teachers" Relationship="DBUniversityModel.FK_Teachers_Faculty" FromRole="Faculty" ToRole="Teachers" />
+    <NavigationProperty Name="Group" Relationship="DBUniversityModel.FK_Group_Faculty" FromRole="Faculty" ToRole="Group" />
+  </EntityType>
+  <EntityType Name="Giving">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" />
+    <Property Name="id_books" Type="Int32" />
+    <Property Name="id_reader" Type="Int32" />
+    <Property Name="id_employee" Type="Int32" />
+    <NavigationProperty Name="Books" Relationship="DBUniversityModel.FK_Giving_Books" FromRole="Giving" ToRole="Books" />
+    <NavigationProperty Name="Employee" Relationship="DBUniversityModel.FK_Giving_Employee" FromRole="Giving" ToRole="Employee" />
+    <NavigationProperty Name="Readers" Relationship="DBUniversityModel.FK_Giving_Readers" FromRole="Giving" ToRole="Readers" />
+  </EntityType>
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Student" Relationship="DBUniversityModel.FK_Student_Group" FromRole="Group" ToRole="Student" />
+    <Property Type="Int32" Name="id_faculty" />
+    <NavigationProperty Name="Faculty" Relationship="DBUniversityModel.FK_Group_Faculty" FromRole="Group" ToRole="Faculty" />
+  </EntityType>
+  <EntityType Name="Publication">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Books" Relationship="DBUniversityModel.FK_Books_Publication" FromRole="Publication" ToRole="Books" />
+    <Property Type="String" Name="country" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Readers">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id_student" Type="Int32" />
+    <Property Name="id_teacher" Type="Int32" />
+    <NavigationProperty Name="Giving" Relationship="DBUniversityModel.FK_Giving_Readers" FromRole="Readers" ToRole="Giving" />
+    <NavigationProperty Name="Student" Relationship="DBUniversityModel.FK_Readers_Student" FromRole="Readers" ToRole="Student" />
+    <NavigationProperty Name="Teachers" Relationship="DBUniversityModel.FK_Readers_Teachers" FromRole="Readers" ToRole="Teachers" />
+    <NavigationProperty Name="Return" Relationship="DBUniversityModel.FK_Return_Readers" FromRole="Readers" ToRole="Return" />
+  </EntityType>
+  <EntityType Name="Return">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" />
+    <Property Name="id_book" Type="Int32" />
+    <Property Name="id_reader" Type="Int32" />
+    <Property Name="id_employee" Type="Int32" />
+    <NavigationProperty Name="Books" Relationship="DBUniversityModel.FK_Return_Books" FromRole="Return" ToRole="Books" />
+    <NavigationProperty Name="Employee" Relationship="DBUniversityModel.FK_Return_Employee" FromRole="Return" ToRole="Employee" />
+    <NavigationProperty Name="Readers" Relationship="DBUniversityModel.FK_Return_Readers" FromRole="Return" ToRole="Readers" />
+  </EntityType>
+  <EntityType Name="Shelving">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="subject" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Books_1" Relationship="DBUniversityModel.FK_Books_Shelving1" FromRole="Shelving" ToRole="Books" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="course" Type="Int32" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="surname" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="patronymic" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="id_group" Type="Int32" />
+    <Property Name="id_faculty" Type="Int32" />
+    <NavigationProperty Name="Faculty" Relationship="DBUniversityModel.FK_Student_Faculty" FromRole="Student" ToRole="Faculty" />
+    <NavigationProperty Name="Group" Relationship="DBUniversityModel.FK_Student_Group" FromRole="Student" ToRole="Group" />
+    <NavigationProperty Name="Readers" Relationship="DBUniversityModel.FK_Readers_Student" FromRole="Student" ToRole="Readers" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Teachers">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="surname" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="patronymic" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="id_faculty" Type="Int32" />
+    <NavigationProperty Name="Faculty" Relationship="DBUniversityModel.FK_Teachers_Faculty" FromRole="Teachers" ToRole="Faculty" />
+    <NavigationProperty Name="Readers" Relationship="DBUniversityModel.FK_Readers_Teachers" FromRole="Teachers" ToRole="Readers" />
+  </EntityType>
+  <EntityType Name="Writer">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="surname" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="patronymic" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Books" Relationship="DBUniversityModel.FK_Books_Writer" FromRole="Writer" ToRole="Books" />
+  </EntityType>
+  <Association Name="FK_Books_EBook">
+    <End Role="EBook" Type="DBUniversityModel.EBook" Multiplicity="0..1" />
+    <End Role="Books" Type="DBUniversityModel.Books" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EBook">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Books">
+        <PropertyRef Name="id_ebook" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Books_Publication">
+    <End Role="Publication" Type="DBUniversityModel.Publication" Multiplicity="0..1" />
+    <End Role="Books" Type="DBUniversityModel.Books" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Publication">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Books">
+        <PropertyRef Name="id_publication" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Books_Writer">
+    <End Role="Writer" Type="DBUniversityModel.Writer" Multiplicity="0..1" />
+    <End Role="Books" Type="DBUniversityModel.Books" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Writer">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Books">
+        <PropertyRef Name="id_writer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Giving_Books">
+    <End Role="Books" Type="DBUniversityModel.Books" Multiplicity="0..1" />
+    <End Role="Giving" Type="DBUniversityModel.Giving" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Books">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Giving">
+        <PropertyRef Name="id_books" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Return_Books">
+    <End Role="Books" Type="DBUniversityModel.Books" Multiplicity="0..1" />
+    <End Role="Return" Type="DBUniversityModel.Return" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Books">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Return">
+        <PropertyRef Name="id_book" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Giving_Employee">
+    <End Role="Employee" Type="DBUniversityModel.Employee" Multiplicity="0..1" />
+    <End Role="Giving" Type="DBUniversityModel.Giving" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Giving">
+        <PropertyRef Name="id_employee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Return_Employee">
+    <End Role="Employee" Type="DBUniversityModel.Employee" Multiplicity="0..1" />
+    <End Role="Return" Type="DBUniversityModel.Return" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Return">
+        <PropertyRef Name="id_employee" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Student_Faculty">
+    <End Role="Faculty" Type="DBUniversityModel.Faculty" Multiplicity="0..1" />
+    <End Role="Student" Type="DBUniversityModel.Student" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Faculty">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Student">
+        <PropertyRef Name="id_faculty" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Teachers_Faculty">
+    <End Role="Faculty" Type="DBUniversityModel.Faculty" Multiplicity="0..1" />
+    <End Role="Teachers" Type="DBUniversityModel.Teachers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Faculty">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Teachers">
+        <PropertyRef Name="id_faculty" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Giving_Readers">
+    <End Role="Readers" Type="DBUniversityModel.Readers" Multiplicity="0..1" />
+    <End Role="Giving" Type="DBUniversityModel.Giving" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Readers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Giving">
+        <PropertyRef Name="id_reader" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Student_Group">
+    <End Role="Group" Type="DBUniversityModel.Group" Multiplicity="0..1" />
+    <End Role="Student" Type="DBUniversityModel.Student" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Group">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Student">
+        <PropertyRef Name="id_group" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Readers_Student">
+    <End Role="Student" Type="DBUniversityModel.Student" Multiplicity="0..1" />
+    <End Role="Readers" Type="DBUniversityModel.Readers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Readers">
+        <PropertyRef Name="id_student" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Readers_Teachers">
+    <End Role="Teachers" Type="DBUniversityModel.Teachers" Multiplicity="0..1" />
+    <End Role="Readers" Type="DBUniversityModel.Readers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Teachers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Readers">
+        <PropertyRef Name="id_teacher" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Return_Readers">
+    <End Role="Readers" Type="DBUniversityModel.Readers" Multiplicity="0..1" />
+    <End Role="Return" Type="DBUniversityModel.Return" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Readers">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Return">
+        <PropertyRef Name="id_reader" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Group_Faculty">
+    <End Type="DBUniversityModel.Faculty" Role="Faculty" Multiplicity="0..1" />
+    <End Type="DBUniversityModel.Group" Role="Group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Faculty">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Group">
+        <PropertyRef Name="id_faculty" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Books_Shelving1">
+    <End Type="DBUniversityModel.Shelving" Role="Shelving" Multiplicity="0..1" />
+    <End Type="DBUniversityModel.Books" Role="Books" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shelving">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Books">
+        <PropertyRef Name="id_shelving" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

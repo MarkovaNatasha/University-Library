@@ -1,0 +1,988 @@
+﻿<Window x:Class="LibraryUniversity.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Бібліотека університету" Height="700" Width="800" WindowStartupLocation="CenterScreen" Icon="/LibraryUniversity;component/Images/ic_book.ico"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ViewModels="clr-namespace:LibraryUniversity.ViewModel"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <Window.Resources>
+        <Style x:Key="forBackground" TargetType="Grid">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" Opacity="0.5" >
+                        <GradientStop Color="#B7B7B7" Offset="0.0" />
+                        <GradientStop Color="#D4D5D5" Offset="0.5" />
+                        <GradientStop Color="White" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border Name="Border" CornerRadius="4" >
+                            <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#A9DBFA" />
+                                <Setter TargetName="Border" Property="Opacity" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="comboTrigger" TargetType="ComboBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=teacher, Path=IsChecked}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="SelectedItem" Value="{x:Null}"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="comboForAddNewTrigger" TargetType="ComboBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=teacher2, Path=IsChecked}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="SelectedItem" Value="{x:Null}"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="comboNamesTrigger" TargetType="ComboBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=student, Path=IsChecked}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="ItemsSource" Value="{Binding StudentNames}"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=student, Path=IsChecked}" Value="False">
+                    <DataTrigger.Setters>
+                        <Setter Property="ItemsSource" Value="{Binding TeacherNames}"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <x:Array Type="{x:Type sys:Int32}" x:Key="intervals">
+            <sys:Int32>1</sys:Int32>
+            <sys:Int32>2</sys:Int32>
+            <sys:Int32>3</sys:Int32>
+            <sys:Int32>4</sys:Int32>
+            <sys:Int32>5</sys:Int32>
+            <sys:Int32>6</sys:Int32>
+        </x:Array>
+    </Window.Resources>
+    <Grid >
+        <Grid.Background>
+            <ImageBrush ImageSource="/LibraryUniversity;component/Images/background1.png" />
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Загальна кількість книг:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" />
+        <Label Content="{Binding CountAllBook}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" FontWeight="Bold" />
+        <Label Content="Кількість книг у використанні:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"  />
+        <Label Content="{Binding CountGiveBook}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" FontWeight="Bold" />
+        <TabControl Margin="30,0,30,30" Grid.Row="2" Grid.ColumnSpan="2" TabStripPlacement="Left"  BorderBrush="{x:Null}" Background="{x:Null}">
+            <TabItem Height="55" Width="55" Name="books" Foreground="{x:Null}" BorderBrush="{x:Null}" Background="{x:Null}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Image Height="50" Width="50" Source="/LibraryUniversity;component/Images/books.png" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Style="{StaticResource forBackground}">
+                   
+                    <Grid Margin="10">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="3*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="2*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.ColumnSpan="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="15*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="2" Text="{Binding TextFound, Mode=TwoWay}" />
+                            <Button Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Stretch" Content="Знайти" Margin="2" Command="{Binding ClickFoundBook}" />
+                            <Button Grid.Row="0" Grid.Column="2"  HorizontalAlignment="Stretch" Content="X" Margin="2" Command="{Binding ClickRefreshBook}" />
+                        </Grid>
+
+                        <DataGrid HorizontalAlignment="Stretch" SelectionMode="Single" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  IsReadOnly="True"  AutoGenerateColumns="False" 
+                                          CanUserAddRows="True" Name="paperBooks" ItemsSource="{Binding Path=Books, Mode=TwoWay}" Grid.Row="1" Grid.ColumnSpan="2">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding ClickForGetCountGivingBook}" CommandParameter="{Binding ElementName=paperBooks, Path=SelectedItem}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="3*" Header="Назва книги" Binding="{Binding name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <DataGridTextColumn Width="2*" Header="Автор">
+                                    <DataGridTextColumn.Binding>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="Writer.surname" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="Writer.name" UpdateSourceTrigger="PropertyChanged"/>
+                                        </MultiBinding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="*" Header="Кількість книг" Binding="{Binding count, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="2" Content="Звіт про найпопулярніші книги за поточний місяць" Command="{Binding ClickGetReport}"/>
+                        <GroupBox Grid.Row="3" Grid.Column="0" Header="Додатково">
+                            <Grid Background="#F9F9F9F9">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="Видавництво" Name="label1" />
+                                <Label Grid.Row="2" Grid.Column="0" Content="Дата" Name="label2"  />
+                                <Label Grid.Row="1" Grid.Column="0" Content="ISBN"  Name="label3" />
+                                <Label Grid.Row="3" Grid.Column="0" Content="Сторінки" Name="label4" />
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ElementName=paperBooks, Path=SelectedItem.Publication.name}" Name="textBox1" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ElementName=paperBooks, Path=SelectedItem.year}" Name="textBox2" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ElementName=paperBooks, Path=SelectedItem.ISBN}" Name="textBox3" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding ElementName=paperBooks, Path=SelectedItem.pages}" Name="textBox4" Margin="2" IsReadOnly="True" />
+                                <Label Content="Полиця" Grid.Row="0" Grid.Column="2"  Name="label8" />
+                                <Label Content="Тип" Grid.Row="1" Grid.Column="2"  Name="label9" />
+                                <Label Content="Розмір" Grid.Row="2" Grid.Column="2"  Name="label10" />
+                                <Label Content="Адреса" Grid.Row="3" Grid.Column="2"  Name="label11" />
+                                <TextBox Grid.Column="3" Grid.Row ="0" Name="textBox5" Text="{Binding ElementName=paperBooks, Path=SelectedItem.Shelving.subject}" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Column="3" Grid.Row ="1" Name="textBox6" Text="{Binding ElementName=paperBooks, Path=SelectedItem.EBook.type}" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Column="3" Grid.Row ="2" Name="textBox7" Text="{Binding ElementName=paperBooks, Path=SelectedItem.EBook.size}" Margin="2" IsReadOnly="True" />
+                                <TextBox Grid.Column="3" Grid.Row ="3" Name="textBox8" Text="{Binding ElementName=paperBooks, Path=SelectedItem.EBook.adress}" Margin="2" IsReadOnly="True" />
+                                <Label Content="Кількість виданих книг:" Grid.Row="4" Grid.ColumnSpan="2" Name="label6" />
+                                <Label Content="{Binding BookGivingCount}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="countGivingBook" FontWeight="Bold" />
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Column="1" Grid.Row="3" Header="Видача"  HorizontalAlignment="Stretch" Name="groupBox1" VerticalAlignment="Stretch" >
+                            <Grid  Background="#F9F9F9F9">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <RadioButton Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"   Content="Студент" Name="student" GroupName="1" IsChecked="True"   />
+                                <RadioButton Grid.Column="2" Grid.Row="0"  VerticalAlignment="Center" Content="Викладач" Name="teacher" GroupName="1" />
+                                <ComboBox Grid.Column="1" Grid.Row="1"  VerticalAlignment="Center"  Name="comboBox1" DisplayMemberPath="name" ItemsSource="{Binding Faculties}" SelectedItem ="{Binding SelectedFaculty}" Margin="2,2,66,2" Grid.ColumnSpan="2">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClickCommandSelectedCombo}" CommandParameter="{Binding ElementName=comboBox1, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
+                                </ComboBox>
+                                <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Факультет" Name="label5" Margin="2" />
+                                <ComboBox  Grid.Column="2" Grid.Row="1" Style="{StaticResource comboTrigger}" Name="comboBox2" VerticalAlignment="Center" DisplayMemberPath="name" ItemsSource="{Binding SomeGroups}" SelectedItem ="{Binding SelectedGroup}" Margin="58,2,2,2" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClickCommandSelectedComboGroup}" CommandParameter="{Binding ElementName=comboBox1, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
+                                </ComboBox>
+                                <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"  Content="ПІБ" VerticalAlignment="Center"  Name="label7" Margin="2"  />
+                                <ComboBox Style="{StaticResource comboNamesTrigger}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Height="23" VerticalAlignment="Center" Name="comboBox3"  SelectedItem="{Binding SelectedReader}" Margin="2" >
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0} {1} {2}">
+                                                                <Binding Path="surname" />
+                                                                <Binding Path="name" />
+                                                                <Binding Path="patronymic" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Grid.ColumnSpan="3" Grid.Row="3"  Content="Видати книгу" Name="button1" Width="150" VerticalAlignment="Center" Command="{Binding ClickCommandGiving}" />
+
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Name="readers" Height="55" Width="55"  BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Image Height="50" Width="50"  Source="/LibraryUniversity;component/Images/readers.png" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <TabControl TabStripPlacement="Top" BorderBrush="{x:Null}" Background="{x:Null}">
+                        <TabItem Header="Студенти" Height="30" Width="100" IsSelected="{Binding IsSelectedStudent}">
+                            <Grid  Style="{StaticResource forBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="2.8*"/>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" />
+
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/> 
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="82*"/>
+                                        <ColumnDefinition Width="109*"/>
+                                        <ColumnDefinition Width="46*"/>
+                                        <ColumnDefinition Width="84*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Факультет" Grid.Row="0" Grid.Column="0" Margin="10,10,0,0"/>
+                                    <Label Content="Група" Grid.Row="0" Grid.Column="2" Margin="0,10,0,0"/>
+                                    <ComboBox  Grid.Row="0" Grid.Column="1"  Margin="0,10,0,2" ItemsSource="{Binding Faculties}" Name="comboFacultiesStudent" DisplayMemberPath="name" SelectedItem="{Binding SelectedfacultyStudent}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding ClickSelectedFacultiesStudent}" CommandParameter="{Binding ElementName=comboFacultiesStudent, Path=SelectedItem}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ComboBox>
+                                    <ComboBox Grid.Column="3" Margin="0,10,2,2" ItemsSource="{Binding SomeGroupsSt}" DisplayMemberPath="name" Name="comboGrStudent" SelectedItem="{Binding SelectedgroupStudent}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding ClickSelectedGroupsStudent}" CommandParameter="{Binding ElementName=comboGrStudent, Path=SelectedItem}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ComboBox>
+                                    <Button Grid.Row="0" Grid.Column="4" Margin="0,10,10,2" HorizontalAlignment="Stretch" Content=" X " Command="{Binding ClickRefreshStudent}" />
+                                </Grid>
+                                <DataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding Students}" AutoGenerateColumns="False" Name="studentReaders" Margin="10,5,10,10" SelectionMode="Single">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClickStudentGiving}" CommandParameter="{Binding ElementName=studentReaders, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Призвіще" Binding="{Binding surname}"/>
+                                        <DataGridTextColumn Width="*" Header="Ім'я" Binding="{Binding name}"/>
+                                        <DataGridTextColumn Width="*" Header="По-батькові" Binding="{Binding patronymic}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <DataGrid Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" IsReadOnly="True" ItemsSource="{Binding StudentGiving}" AutoGenerateColumns="False"  Margin="10" Name="dataGrid2" SelectionMode="Single">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Назва книги" Binding="{Binding Books.name}"/>
+                                        <DataGridTextColumn Width="*" Header="Автор" Binding="{Binding Books.Writer.surname}"/>
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                                <GroupBox Grid.Column="1" Grid.Row="2" Header="Операції" Name="groupBox2" >
+                                    <Grid Background="#FFF0F0F0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Дата взяття" Grid.Row="0" Grid.Column="0" Name="label15" />
+                                        <Label Content="Працівник" Grid.Row="1" Grid.Column="0" Name="label16" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Name="textBox12" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=dataGrid2, Path=SelectedItem.date}" IsReadOnly="True" />
+                                        <TextBox Grid.Row="1" Grid.Column="1" Name="textBox13" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=dataGrid2, Path=SelectedItem.Employee.surname}" IsReadOnly="True" />
+                                        <Button Content="Повернути книгу" Command="{Binding ClickReturnBook}" CommandParameter="{Binding ElementName=dataGrid2, Path=SelectedItem}" Grid.Column="1" Grid.Row="2" Name="button2" HorizontalAlignment="Left" Width="200" Margin="2"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Grid.Column="0" Grid.Row="2" Header="Додатково" Name="groupBox3" >
+                                    <Grid Background="#FFF0F0F0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Курс" Grid.Row="0" Grid.Column="0" Name="label12" />
+                                        <Label Content="Факультет" Grid.Row="1" Grid.Column="0" Name="label13" />
+                                        <Label Content="Група" Grid.Row="2" Grid.Column="0" Name="label14" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Name="textBox9" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=studentReaders, Path=SelectedItem.course}" IsReadOnly="True" />
+                                        <TextBox Grid.Row="1" Grid.Column="1" Name="textBox10" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=studentReaders, Path=SelectedItem.Group.Faculty.name}" IsReadOnly="True" />
+                                        <TextBox Grid.Row="2" Grid.Column="1" Name="textBox11" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=studentReaders, Path=SelectedItem.Group.name}" IsReadOnly="True" />
+                                        <Button Grid.Column="1" Grid.Row="3" Width="200" Content="Видалити" HorizontalAlignment="Left" Margin="2" Command="{Binding ClickDeleteStudent}" CommandParameter="{Binding ElementName=studentReaders, Path=SelectedItem}"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+
+                        </TabItem>
+                        <TabItem Header="Викладачі" Height="30" Width="100" IsSelected="{Binding IsSelectedTeacher}">
+                            <Grid  Style="{StaticResource forBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="3*" />
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Row="0" Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="109*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Факультет" Grid.Row="0" Grid.Column="0" Margin="10,10,0,0"/>
+                                    <ComboBox  Grid.Row="0" Grid.Column="1"  Margin="2,10,2,2" ItemsSource="{Binding Faculties}" Name="comboFacultiesTeacher"  DisplayMemberPath="name" SelectedItem="{Binding SelectedfacultyTeacher}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding ClickSelectedFacultiesTeacher}" CommandParameter="{Binding ElementName=comboFacultiesTeacher, Path=SelectedItem}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ComboBox>
+                                    <Button Grid.Row="0" Grid.Column="2" Margin="0,10,10,2" HorizontalAlignment="Stretch" Content=" X " Command="{Binding ClickRefreshTeacher}" CommandParameter="{Binding ElementName=comboFacultiesTeacher, Path=SelectedItem}" />
+                                </Grid>
+                                <DataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding Teachers}" AutoGenerateColumns="False" Name="teacherReaders" Margin="10,5,10,10" SelectionMode="Single">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClickTeacherGiving}" CommandParameter="{Binding ElementName=teacherReaders, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Призвіще" Binding="{Binding surname}"/>
+                                        <DataGridTextColumn Width="*" Header="Ім'я" Binding="{Binding name}"/>
+                                        <DataGridTextColumn Width="*" Header="По-батькові" Binding="{Binding patronymic}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <DataGrid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" IsReadOnly="True" ItemsSource="{Binding TeacherGiving}" AutoGenerateColumns="False"  Margin="10" Name="dataGrid3" SelectionMode="Single">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Назва книги" Binding="{Binding Books.name}"/>
+                                        <DataGridTextColumn Width="*" Header="Автор" Binding="{Binding Books.Writer.surname}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <GroupBox Grid.Column="1" Grid.Row="2" Header="Операції" Name="groupBox4" >
+                                    <Grid Background="#FFF0F0F0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Дата взяття" Grid.Row="0" Grid.Column="0" Name="label17" />
+                                        <Label Content="Працівник" Grid.Row="1" Grid.Column="0" Name="label18" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Name="textBox14" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=dataGrid3, Path=SelectedItem.date}" IsReadOnly="True" />
+                                        <TextBox Grid.Row="1" Grid.Column="1" Name="textBox15" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=dataGrid3, Path=SelectedItem.Employee.surname}" IsReadOnly="True" />
+                                        <Button Content="Повернути книгу" Grid.Column="1" Grid.Row="2" Name="button3" HorizontalAlignment="Left" Width="200" Margin="2" Command="{Binding ClickReturnBook}" CommandParameter="{Binding ElementName=dataGrid3, Path=SelectedItem}"/>
+
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Grid.Column="0" Grid.Row="2" Header="Додатково" Name="groupBox5" >
+                                    <Grid Background="#FFF0F0F0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Факультет" Grid.Row="0" Grid.Column="0" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="2" Text="{Binding ElementName=teacherReaders, Path=SelectedItem.Faculty.name}" IsReadOnly="True" />
+                                        <Button Grid.Column="1" Grid.Row="2" Width="200" Content="Видалити" HorizontalAlignment="Left" Margin="2" Command="{Binding ClickDeleteTeacher}" CommandParameter="{Binding ElementName=teacherReaders, Path=SelectedItem}"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Новий читач" Height="30" Width="100">
+                            <Grid  Style="{StaticResource forBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+                                <RadioButton Grid.Row="0" Grid.Column="0" Content="Студент" GroupName="2" Margin="10,10,0,0" IsChecked="True" Name="student2"/>
+                                <RadioButton Grid.Row="0" Grid.Column="1" Content="Викладач" GroupName="2" Margin="2,10,0,0" Name="teacher2"/>
+                                <Label Content="Призвіще*" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" />
+                                <Label Content="Ім'я*" Grid.Row="2" Grid.Column="0" Margin="10,0,0,0" />
+                                <Label Content="По-батькові"  Grid.Row="3" Grid.Column="0" Margin="10,0,0,0" />
+                                <Label Content="Курс  (Група)"  Grid.Row="5" Grid.Column="0" Margin="10,0,0,0" />
+                                <Label Content="Факультет*"  Grid.Row="4" Grid.Column="0" Margin="10,0,0,0" />
+                                <TextBox Grid.Column="1" Grid.Row="1" Margin="2" Name="newSurname"/>
+                                <TextBox Grid.Column="1" Grid.Row="2" Margin="2" Name="newName"/>
+                                <TextBox Grid.Column="1" Grid.Row="3" Margin="2" Name="newPatronymic"/>
+                                <ComboBox Grid.Column="1" Grid.Row="5" Margin="2" Name="newCourse"  Style="{StaticResource comboForAddNewTrigger}" ItemsSource="{StaticResource intervals}"/>
+                                <ComboBox  Grid.Column="1" Grid.Row="4" VerticalAlignment="Center"  DisplayMemberPath="name" Name="facultiesAddnew" ItemsSource="{Binding Faculties}" SelectedItem ="{Binding SelectedFacultyAddNew}" Margin="2" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClickCommandSelectedComboAdd}" CommandParameter="{Binding ElementName=facultiesAddnew, Path=SelectedItem}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
+                                </ComboBox>
+                                <ComboBox Grid.Column="2" Grid.Row="5" Margin="2" Name="newGroup" Style="{StaticResource comboForAddNewTrigger}" ItemsSource="{Binding SomeGroupsAdd}" SelectedItem ="{Binding SelectedGroupAddNew}" DisplayMemberPath="name"/>
+                                <Button Command="{Binding ClickAddNewReader}" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Width="146" Margin="2" Content="Додати" >
+                                    <Button.Resources>
+                                        <ViewModels:ConverterNewReader x:Key="ConvertForNewReader"/>
+                                    </Button.Resources>
+                                    <Button.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource ConvertForNewReader}">
+                                            <Binding ElementName="student2" Path="IsChecked" />
+                                            <Binding ElementName="teacher2" Path="IsChecked" />
+                                            <Binding ElementName="newSurname" Path="Text"/>
+                                            <Binding ElementName="newName" Path="Text"/>
+                                            <Binding ElementName="newPatronymic" Path="Text"/>
+                                            <Binding ElementName="newCourse" Path="SelectedItem"/>
+                                            <Binding ElementName="facultiesAddnew" Path="SelectedItem"/>
+                                            <Binding ElementName="newGroup" Path="SelectedItem"/>
+                                        </MultiBinding>
+                                    </Button.CommandParameter>
+                                </Button>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+
+            <TabItem Name="manual" Height="55" Width="55"  Background="{x:Null}"  BorderBrush="{x:Null}" Foreground="{x:Null}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Image Height="50" Width="50" Source="/LibraryUniversity;component/Images/directory.png" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+
+                    <TabControl TabStripPlacement="Top"  BorderBrush="{x:Null}" Background="{x:Null}">
+                        <TabItem Header="Дані"  Height="30" Width="100">
+                            <ScrollViewer  HorizontalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <StackPanel.Background>
+                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" Opacity="0.5" >
+                                            <GradientStop Color="#B7B7B7" Offset="0.0" />
+                                            <GradientStop Color="#D4D5D5" Offset="0.5" />
+                                            <GradientStop Color="White" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </StackPanel.Background>
+                                    <Expander Header="Факультети"  Width="300" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="faculties" Height="150" ItemsSource="{Binding Faculties}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Назва" Binding="{Binding name}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Операції">
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Назва" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Name="newFaculty" Margin="2" Text="{Binding ElementName=faculties, Path=SelectedItem.name, Mode=OneWay}" />
+                                                    <Button Content="Додати" Grid.Column="1" Grid.Row="1"   Margin="2" Command="{Binding ClickAddNewFaculty}" CommandParameter="{Binding ElementName=newFaculty, Path=Text}"/>
+                                                    <Button Content="Редагувати" Grid.Column="2" Grid.Row="1"  Margin="2" Command="{Binding ClickEditFaculty}" CommandParameter="{Binding ElementName=newFaculty, Path=Text}"/>
+                                                    <Button Content="Видалити" Grid.Column="3" Grid.Row="1"  Margin="2" Command="{Binding ClickDeleteFaculty}" CommandParameter="{Binding ElementName=faculties, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                    <Expander Header="Групи" Width="350" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="groups" Height="150" ItemsSource="{Binding Groups}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Назва" Binding="{Binding name}"/>
+                                                    <DataGridTextColumn Width="*" Header="Факультет" Binding="{Binding Faculty.name}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Операції" >
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Назва" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Name="AddGroup" Margin="2" Text="{Binding ElementName=groups, Path=SelectedItem.name, Mode=OneWay}" />
+                                                    <Label Content="Факультет" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+                                                    <ComboBox Grid.Row="0" Grid.Column="2" Name="AddFacultyGroup" Width="110" HorizontalAlignment="Right"  Margin="2" Grid.ColumnSpan="2" ItemsSource="{Binding Faculties}" SelectedItem="{Binding ElementName=groups, Path=SelectedItem.Faculty}" >
+                                                        <ComboBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0}">
+                                                                <Binding Path="name" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                                </TextBlock>
+                                                            </DataTemplate>
+                                                        </ComboBox.ItemTemplate>
+                                                    </ComboBox>
+                                                    <Button Content="Додати" Grid.Column="1" Grid.Row="1"   Margin="2" Command="{Binding ClickAddNewGroup}" >
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewGroup x:Key="ConvertForNewGroup"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewGroup}">
+                                                                <Binding ElementName="AddGroup" Path="Text" />
+                                                                <Binding ElementName="AddFacultyGroup" Path="SelectedItem" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Content="Редагувати" Grid.Column="2" Grid.Row="1"  Margin="2" Command="{Binding ClickEditGroup}">
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewGroup x:Key="ConvertForNewGroup"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewGroup}">
+                                                                <Binding ElementName="AddGroup" Path="Text" />
+                                                                <Binding ElementName="AddFacultyGroup" Path="SelectedItem" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Content="Видалити" Grid.Column="3" Grid.Row="1"  Margin="2" Command="{Binding ClickDeleteGroup}" CommandParameter="{Binding ElementName=groups, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                    <Expander Header="Видавництва" Width="300"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="publications" Height="150" ItemsSource="{Binding Publications}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Назва" Binding="{Binding name}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Операції">
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Назва" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Name="newPublication" Margin="2" Text="{Binding ElementName=publications, Path=SelectedItem.name, Mode=OneWay}" />
+                                                    <Button Content="Додати" Grid.Column="1" Grid.Row="1"   Margin="2" Command="{Binding ClickAddNewPublication}" CommandParameter="{Binding ElementName=newPublication, Path=Text}"/>
+                                                    <Button Content="Редагувати" Grid.Column="2" Grid.Row="1"  Margin="2" Command="{Binding ClickEditPublication}" CommandParameter="{Binding ElementName=newPublication, Path=Text}"/>
+                                                    <Button Content="Видалити" Grid.Column="3" Grid.Row="1"  Margin="2" Command="{Binding ClickDeletePublication}" CommandParameter="{Binding ElementName=publications, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                    <Expander Header="Автори книг" Width="450"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="writers" Height="150" ItemsSource="{Binding Writers}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Призвіще" Binding="{Binding surname}"/>
+                                                    <DataGridTextColumn Width="*" Header="Ім'я" Binding="{Binding name}"/>
+                                                    <DataGridTextColumn Width="*" Header="По-батькові" Binding="{Binding patronymic}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Operations">
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Призвіще" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1"  Name="newSurnameWriter" Margin="2" Text="{Binding ElementName=writers, Path=SelectedItem.surname, Mode=OneWay}" />
+                                                    <Label Content="Ім'я" HorizontalAlignment="Right" Grid.Column="2" Margin="0,2,45,24" Grid.RowSpan="2" />
+                                                    <TextBox Grid.Column="2"  Name="newNameWriter" Margin="35,2,43,2" Text="{Binding ElementName=writers, Path=SelectedItem.name, Mode=OneWay}" Grid.ColumnSpan="2" />
+                                                    <Label Content="По-батькові" HorizontalAlignment="Right" Grid.Column="3" Grid.ColumnSpan="2" Width="111" />
+                                                    <TextBox Grid.Column="4"  Name="newPatronymicWriter" Margin="43,2,2,2" Text="{Binding ElementName=writers, Path=SelectedItem.patronymic, Mode=OneWay}" Grid.ColumnSpan="2" />
+                                                    <Button Content="Додати" Grid.Row="1" HorizontalAlignment="Left" Grid.Column="1" Grid.ColumnSpan="4" Width="97"   Margin="2" Command="{Binding ClickAddNewWriter}">
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewWriter x:Key="ConvertForNewWriter"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewWriter}">
+                                                                <Binding ElementName="newSurnameWriter" Path="Text" />
+                                                                <Binding ElementName="newNameWriter" Path="Text" />
+                                                                <Binding ElementName="newPatronymicWriter" Path="Text" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button  Content="Редагувати" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Width="97" HorizontalAlignment="Center"  Margin="2" Command="{Binding ClickEditWriter}" >
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewWriter x:Key="ConvertForNewWriter"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewWriter}">
+                                                                <Binding ElementName="newSurnameWriter" Path="Text" />
+                                                                <Binding ElementName="newNameWriter" Path="Text" />
+                                                                <Binding ElementName="newPatronymicWriter" Path="Text" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Content="Видалити" Grid.Column="1" Grid.ColumnSpan="4" Width="97" Grid.Row="1" HorizontalAlignment="Right"  Margin="2" Command="{Binding ClickDeleteWriter}" CommandParameter="{Binding ElementName=writers, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                    <Expander Header="Полиці" Width="300"  HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="shelvings" Height="150" ItemsSource="{Binding Shelvings}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Предмет" Binding="{Binding subject}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Операції">
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Предмет" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Name="newShelving" Margin="2" Text="{Binding ElementName=shelvings, Path=SelectedItem.subject, Mode=OneWay}" />
+                                                    <Button Content="Додати" Grid.Column="1" Grid.Row="1"   Margin="2" Command="{Binding ClickAddNewShelving}" CommandParameter="{Binding ElementName=newShelving, Path=Text}"/>
+                                                    <Button Content="Редагувати" Grid.Column="2" Grid.Row="1"  Margin="2" Command="{Binding ClickEditShelving}" CommandParameter="{Binding ElementName=newShelving, Path=Text}"/>
+                                                    <Button Content="Видалити" Grid.Column="3" Grid.Row="1"  Margin="2" Command="{Binding ClickDeleteShelving}" CommandParameter="{Binding ElementName=shelvings, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                    <Expander Header="Працівники" Width="400"  HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10">
+                                        <StackPanel>
+                                            <DataGrid AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}" IsReadOnly="True" Name="employees" Height="150" ItemsSource="{Binding Employees}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Width="*" Header="Призвіще" Binding="{Binding surname}"/>
+                                                    <DataGridTextColumn Width="*" Header="Ім'я" Binding="{Binding name}"/>
+                                                    <DataGridTextColumn Width="*" Header="По-батькові" Binding="{Binding patronymic}"/>
+                                                    <DataGridTextColumn Width="*" Header="Пароль" Binding="{Binding password}"/>
+                                                    <DataGridTextColumn Width="*" Header="Права" Binding="{Binding permission}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <GroupBox Header="Операції">
+                                                <Grid Background="#FFF0F0F0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition  Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Призвіще" Grid.Row="0" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="0" Grid.Column="1" Name="newEmployeeSurname" Margin="2" Text="{Binding ElementName=employees, Path=SelectedItem.surname, Mode=OneWay}" />
+                                                    <Label Content="Ім'я" Grid.Column="2" Margin="0,0,32,0" />
+                                                    <TextBox Grid.Column="2"  Name="newEmployeeName" Margin="38,2,33,2" Text="{Binding ElementName=employees, Path=SelectedItem.name, Mode=OneWay}" Grid.ColumnSpan="2" />
+                                                    <Label Content="По-батькові" Grid.Column="3" Grid.ColumnSpan="2" Margin="38,0,15,0" />
+                                                    <TextBox Grid.Column="4"  Name="newEmployeePatronymic" Margin="47,2,2,2" Text="{Binding ElementName=employees, Path=SelectedItem.patronymic, Mode=OneWay}" Grid.ColumnSpan="2" />
+                                                    <Label Content="Пароль" Grid.Row="1" Grid.Column="0"  />
+                                                    <TextBox Grid.Row="1" Grid.Column="1"  Name="newEmployeePassword" Margin="2" Text="{Binding ElementName=employees, Path=SelectedItem.password, Mode=OneWay}" />
+                                                    <Label Content="Права" Grid.Row="1" Grid.Column="2"  />
+                                                    <ComboBox Grid.Row="1" Grid.Column="3"  Name="newEmployeePermission" Margin="2" Text="{Binding ElementName=employees, Path=SelectedItem.permission, Mode=OneWay}">
+                                                        <ComboBoxItem Content="admin" />
+                                                        <ComboBoxItem Content="user" />
+                                                    </ComboBox>
+                                                    <Button Content="Додати" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Width="83" HorizontalAlignment="Left"  Margin="2" Command="{Binding ClickAddNewEmployee}">
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewEmployee x:Key="ConvertForNewEmployee"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewEmployee}">
+                                                                <Binding ElementName="newEmployeeSurname" Path="Text" />
+                                                                <Binding ElementName="newEmployeeName" Path="Text" />
+                                                                <Binding ElementName="newEmployeePatronymic" Path="Text" />
+                                                                <Binding ElementName="newEmployeePassword" Path="Text" />
+                                                                <Binding ElementName="newEmployeePermission" Path="Text" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Content="Редагувати" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Width="83" HorizontalAlignment="Center"  Margin="2" Command="{Binding ClickEditEmployee}">
+                                                        <Button.Resources>
+                                                            <ViewModels:ConverterNewEmployee x:Key="ConvertForNewEmployee"/>
+                                                        </Button.Resources>
+                                                        <Button.CommandParameter>
+                                                            <MultiBinding Converter="{StaticResource ConvertForNewEmployee}">
+                                                                <Binding ElementName="newEmployeeSurname" Path="Text" />
+                                                                <Binding ElementName="newEmployeeName" Path="Text" />
+                                                                <Binding ElementName="newEmployeePatronymic" Path="Text" />
+                                                                <Binding ElementName="newEmployeePassword" Path="Text" />
+                                                                <Binding ElementName="newEmployeePermission" Path="Text" />
+                                                            </MultiBinding>
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Content="Видалити" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Width="83" HorizontalAlignment="Right" Margin="2" Command="{Binding ClickDeleteEmployee}" CommandParameter="{Binding ElementName=employees, Path=SelectedItem}"/>
+                                                </Grid>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Expander>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Книги"  Height="30" Width="100">
+                            <Grid  Style="{StaticResource forBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="3*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <DataGrid Grid.Row="0" Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="dataGrid1" SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding BooksEdit}" SelectionMode="Single">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Назва" Binding="{Binding name}"/>
+                                        <DataGridTextColumn Width="*" Header="Автор" >
+                                            <DataGridTextColumn.Binding>
+                                                <MultiBinding StringFormat="{}{0} {1} {2}">
+                                                    <Binding Path="Writer.surname" UpdateSourceTrigger="PropertyChanged"/>
+                                                    <Binding Path="Writer.name" UpdateSourceTrigger="PropertyChanged"/>
+                                                    <Binding Path="Writer.patronymic" UpdateSourceTrigger="PropertyChanged"/>
+                                                </MultiBinding>
+                                            </DataGridTextColumn.Binding>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Width="*" Header="Видавництво" Binding="{Binding Publication.name}"/>
+                                        <DataGridTextColumn Width="*" Header="Дата" Binding="{Binding year}"/>
+                                        <DataGridTextColumn Width="*" Header="Полиця" Binding="{Binding Shelving.subject}"/>
+                                        <DataGridTextColumn Width="*" Header="ISBN" Binding="{Binding ISBN}"/>
+                                        <DataGridTextColumn Width="*" Header="Сторінки" Binding="{Binding pages}"/>
+                                        <DataGridTextColumn Width="*" Header="Кількість" Binding="{Binding count}"/>
+                                        <DataGridTextColumn Width="*" Header="Розмір" Binding="{Binding EBook.size}"/>
+                                        <DataGridTextColumn Width="*" Header="Тип" Binding="{Binding EBook.type}"/>
+                                        <DataGridTextColumn Width="*" Header="Адреса" Binding="{Binding EBook.adress}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <GroupBox Grid.Row="1" Grid.Column="0" Header="Операції"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                                    <Grid Background="#FFF0F0F0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Назва*" Grid.Row="0" Grid.Column="0" Margin="2" />
+                                        <Label Content="Автор*" Grid.Row="1" Grid.Column="0" Margin="2" />
+                                        <Label Content="Видавництво" Grid.Row="2" Grid.Column="0" Margin="2" />
+                                        <Label Content="Дата" Grid.Row="3" Grid.Column="0" Margin="2" />
+                                        <Label Content="ISBN" Grid.Row="4" Grid.Column="0" Margin="2" />
+                                        <Label Content="Сторінки" Grid.Row="0" Grid.Column="2" Margin="2" />
+                                        <Label Content="Кількість" Grid.Row="1" Grid.Column="2" Margin="2" />
+                                        <Label Content="Полиця" Grid.Row="5" Grid.Column="0" Margin="2" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Name="NewNameBook" Margin="2" Text="{Binding ElementName=dataGrid1, Path=SelectedItem.name, Mode=OneWay}" />
+                                        <TextBox Grid.Row="1" Grid.Column="3" Width="50" HorizontalAlignment="Left" Name="NewCount" Margin="2" Text="{Binding ElementName=dataGrid1, Path=SelectedItem.count, Mode=OneWay}" />
+                                        <TextBox Grid.Row="0" Width="50" HorizontalAlignment="Left" Grid.Column="3" Name="NewPages" Margin="2" Text="{Binding ElementName=dataGrid1, Path=SelectedItem.pages, Mode=OneWay}" />
+                                        <ComboBox Grid.Row="5" Grid.Column="1" SelectedItem="{Binding ElementName=dataGrid1, Path=SelectedItem.Shelving, Mode=OneWay}" ItemsSource="{Binding Shelvings}"  Name="ShelvingCheck" Margin="2" DisplayMemberPath="subject"/>
+                                        <Label Content="Файл" Grid.Row="2" Grid.Column="2" Margin="2"/>
+                                        <TextBox Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" Margin="2" Text="{Binding ElementName=dataGrid1, Path=SelectedItem.EBook.adress}" Name="file"/>
+                                        <Button Grid.Row="2" Grid.Column="5"  Content=" X " Margin="2" Command="{Binding ClickDeleteFile}" CommandParameter="{Binding ElementName=dataGrid1, Path=SelectedItem}"/>
+                                        <ComboBox Grid.Row="1" Grid.Column="1" SelectedItem="{Binding ElementName=dataGrid1, Path=SelectedItem.Writer, Mode=OneWay}" ItemsSource="{Binding Writers}"  Name="WriterCheck" Margin="2" >
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0} {1} {2}">
+                                                                <Binding Path="surname" />
+                                                                <Binding Path="name" />
+                                                                <Binding Path="patronymic" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <ComboBox Grid.Row="2" Grid.Column="1"  Name="PublicationCheck" Margin="2" ItemsSource="{Binding Publications}" SelectedItem="{Binding ElementName=dataGrid1, Path=SelectedItem.Publication, Mode=OneWay}" DisplayMemberPath="name"/>
+
+                                        <DatePicker Grid.Column="1" Grid.Row="3" SelectedDate="{Binding ElementName=dataGrid1, Path=SelectedItem.year, Mode=OneWay}" Name="datePicker" Margin="2" />
+                                        <TextBox Grid.Row="4" Grid.Column="1" Name="NewISBN" Margin="2" Text="{Binding ElementName=dataGrid1, Path=SelectedItem.ISBN, Mode=OneWay}" />
+                                        <Grid Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Content="Додати" Grid.Column="0" Margin="2" Command="{Binding ClickAddNewBooks}" >
+                                            <Button.Resources>
+                                                <ViewModels:ConverterNewBook x:Key="ConvertForNewBook"/>
+                                            </Button.Resources>
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ConvertForNewBook}">
+                                                    <Binding ElementName="NewNameBook" Path="Text" />
+                                                    <Binding ElementName="WriterCheck" Path="SelectedItem" />
+                                                    <Binding ElementName="PublicationCheck" Path="SelectedItem" />
+                                                    <Binding ElementName="datePicker" Path="SelectedDate" />
+                                                    <Binding ElementName="NewISBN" Path="Text" />
+                                                    <Binding ElementName="NewPages" Path="Text" />
+                                                    <Binding ElementName="NewCount" Path="Text" />
+                                                    <Binding ElementName="ShelvingCheck" Path="SelectedItem" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                            <Button Content="Редагувати" Margin="2" Grid.Column="1" Command="{Binding ClickEditBooks}">
+                                            <Button.Resources>
+                                                <ViewModels:ConverterNewBook x:Key="ConvertForNewBook"/>
+                                            </Button.Resources>
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ConvertForNewBook}">
+                                                    <Binding ElementName="NewNameBook" Path="Text" />
+                                                    <Binding ElementName="WriterCheck" Path="SelectedItem" />
+                                                    <Binding ElementName="PublicationCheck" Path="SelectedItem" />
+                                                    <Binding ElementName="datePicker" Path="SelectedDate" />
+                                                    <Binding ElementName="NewISBN" Path="Text" />
+                                                    <Binding ElementName="NewPages" Path="Text" />
+                                                    <Binding ElementName="NewCount" Path="Text" />
+                                                    <Binding ElementName="ShelvingCheck" Path="SelectedItem" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                            <Button Content="Видалити"  Grid.Column="2" Margin="2"  Command="{Binding ClickDeleteBooks}" CommandParameter="{Binding ElementName=dataGrid1, Path=SelectedItem}"  />
+                                        </Grid>
+                                        <Expander Grid.Column="2" Grid.ColumnSpan="4" Grid.RowSpan="2" Grid.Row="3"  Header="Електронна книга"  >
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Content="{Binding File.Name}" Grid.Row="0" Grid.Column="1" Margin="2"/>
+                                                
+                                                <Button Grid.Row="0" Grid.Column="0" Content="Завантажити файл" Margin="2" Command="{Binding ClickLoadFile}"/>
+                                                
+                                            </Grid>
+                                        </Expander>
+                                    </Grid>
+                                </GroupBox>
+                                
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <Image Height="50" Width="50" Source="/LibraryUniversity;component/Images/icon_ebook.png" />
+                    </StackPanel>
+                </TabItem.Header>
+                            <Grid  Style="{StaticResource forBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Row="1" Grid.Column="2" Content="..." Margin="2" Command="{Binding ClickGetSourceFile}" />
+                                <Label Grid.Row="0" Grid.Column="0" Content="Вихідна папка з файлами:" Margin="10,10,0,0" />
+                                <Button Grid.Column="2" Grid.Row="3" Content="..." Margin="2" Command="{Binding ClickSetDestinationFile}" />
+                                <Label Grid.Row="2" Grid.Column="0" Content="Папка з результуючим файлом:" Margin="10,2,0,0" />
+
+                                <TextBox Grid.Row="1" Grid.ColumnSpan="2" Name="sourceFile" Margin="10,2,2,2" IsReadOnly="True" Text="{Binding SourceFile, Mode=TwoWay}" />
+                                <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Name="destinationFile" Margin="10,2,2,2" IsReadOnly="False" Text="{Binding DestinationFile, Mode=TwoWay}"/>
+                    <Button Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Height="23" VerticalAlignment="Bottom" Width="125" HorizontalAlignment="Right" Margin="2" Content="Конвертувати" Command="{Binding ClickConvertToPdf}" CommandParameter="{Binding ElementName=progressBar1}" />
+                    <ProgressBar Grid.ColumnSpan="3" Grid.Row="4" Width="250" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,2,2,2"  Name="progressBar1" Value="{Binding CurrentProgress}"  Maximum="{Binding Max, Mode=OneWay}" />
+                            </Grid>
+                
+            </TabItem>
+        </TabControl>
+        <Label Grid.Row="3" Name="labelEmp" Grid.Column="0" HorizontalAlignment="Right"  Content="{Binding EmployeeCurrent, Mode=TwoWay}"/>
+    </Grid>
+</Window>
